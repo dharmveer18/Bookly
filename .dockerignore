@@ -1,0 +1,29 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# Virtualenv
+venv/
+env/
+
+# OS / Editor junk
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Git
+.git
+.gitignore
+
+# Tests
+.coverage
+htmlcov/
+pytest_cache/

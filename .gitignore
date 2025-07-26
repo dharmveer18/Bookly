@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Django specific
+*.sqlite3
+*.log
+
+# Environment
+env/
+venv/
+ENV/
+.venv/
+.env
+
+# Node / Tailwind / JS
+node_modules/
+package-lock.json
+yarn.lock
+dist/
+build/
+*.js.map
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Compiled CSS/JS if generated
+static/css/
+static/js/
