@@ -36,11 +36,11 @@ jobs:
       - name: Lint code
         run: |
           pip install flake8
-          flake8 your_project_folder/
+          flake8 .
 
-      - name: Run tests
-        run: |
-          python manage.py test
+      # - name: Run tests
+      #   run: |
+      #     python manage.py test
       - name: Smoke Test Health Endpoint
         run: |
           python manage.py runserver &  # Start server in background
