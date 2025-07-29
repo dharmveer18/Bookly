@@ -60,10 +60,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # 2. Third-party apps
-    #'tailwind',
+    # 'tailwind',
     # 'django_browser_reload',
     # 3. Custom apps
-    #'theme',     # Tailwind theme app (your frontend assets)
+    # 'theme',     # Tailwind theme app (your frontend assets)
     "login",  # Your app handling login, home, booking, etc.
     "social_django",
 ]
