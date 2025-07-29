@@ -1,14 +1,29 @@
 # .pre-commit-config.yaml
+# .pre-commit-config.yaml
+exclude: .*migrations\/.*
 repos:
+  # - repo: https://github.com/pre-commit/pre-commit-hooks
+  #   rev: v4.4.0
+  #   hooks:
+  #     - id: check-yaml
+  #     - id: end-of-file-fixer
+  #     - id: trailing-whitespace
+
   - repo: https://github.com/psf/black
     rev: 24.4.2  # use the latest stable version
     hooks:
       - id: black
 
   - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.13.2
+    rev: v5.10.1
     hooks:
       - id: isort
+
+  # - repo: https://github.com/pre-commit/mirrors-autoflake
+  #   rev: v2.2.1
+  #   hooks:
+  #     - id: autoflake
+  #       args: ["--remove-unused-variables", "--remove-all-unused-imports"]
 
   - repo: https://github.com/pycqa/flake8
     rev: 7.3.0
