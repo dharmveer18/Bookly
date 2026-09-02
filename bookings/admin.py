@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
 from django.contrib.auth.models import Group
 from django.db import models
 from django.http import HttpResponseRedirect
@@ -88,35 +87,14 @@ class StaffAdmin(admin.ModelAdmin):
     inlines = [StaffAvailabilityInline, TimeOffInline]
 
 
-class AppointmentAdminForm(forms.ModelForm):
-    service = forms.ModelChoiceField(
-        queryset=Service.objects.filter(active=True),
-        required=False,
-        help_text="Price and duration are taken from the selected service.",
-    )
-
-    class Meta:
-        model = Appointment
-        fields = ["client", "staff", "service", "start_time", "status", "notes"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.instance.pk:
-            line = self.instance.services.first()
-            if line:
-                self.fields["service"].initial = line.service_id
-        # "service" is a plain form field, not a real model FK on Appointment,
-        # so it doesn't automatically get the change/add/view icons Client
-        # and Staff have - wrap it the same way Django wraps a real FK.
-        rel = AppointmentService._meta.get_field("service").remote_field
-        self.fields["service"].widget = RelatedFieldWidgetWrapper(
-            self.fields["service"].widget,
-            rel,
-            admin.site,
-            can_add_related=True,
-            can_change_related=True,
-            can_view_related=True,
-        )
+class AppointmentServiceInline(admin.StackedInline):
+    model = AppointmentService
+    extra = 1
+    fields = ["service"]
+    # skips the boxed heading/table chrome of the built-in stacked/tabular
+    # templates - just repeats the plain "Service" dropdown, styled the
+    # same as Client/Staff, with a plain "+ Add another Service" link.
+    template = "admin/edit_inline/service_plain.html"
 
 
 @admin.register(Appointment)
@@ -124,7 +102,8 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_display = ("client", "staff", "start_time", "end_time", "status")
     list_filter = ("status", "staff")
     search_fields = ("client__first_name", "client__last_name")
-    form = AppointmentAdminForm
+    exclude = ["reminder_sent_at"]
+    inlines = [AppointmentServiceInline]
     formfield_overrides = {
         models.DateTimeField: {
             "form_class": forms.DateTimeField,
@@ -134,19 +113,19 @@ class AppointmentAdmin(admin.ModelAdmin):
         },
     }
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        service = form.cleaned_data.get("service")
-        line = obj.services.first()
-        if service:
-            if line is None:
-                AppointmentService.objects.create(appointment=obj, service=service, order=0)
-            elif line.service_id != service.id:
-                line.service = service
-                line.price_at_booking = None
-                line.save()
-        elif line is not None:
-            line.delete()
+    def save_formset(self, request, form, formset, change):
+        # "order" and "price_at_booking" aren't shown on the inline form -
+        # assign order from row position, price auto-fills on save().
+        if formset.model is not AppointmentService:
+            return super().save_formset(request, form, formset, change)
+        instances = formset.save(commit=False)
+        for index, instance in enumerate(instances):
+            instance.appointment = form.instance
+            instance.order = index
+            instance.save()
+        for obj in formset.deleted_objects:
+            obj.delete()
+        formset.save_m2m()
 
     def get_urls(self):
         custom_urls = [
@@ -180,9 +159,9 @@ class AppointmentAdmin(admin.ModelAdmin):
         return super().change_view(request, object_id)
 
     def response_add(self, request, obj, post_url_continue=None):
-        # runs after save_model() has attached the service, so the
-        # confirmation can include it (a post_save signal on Appointment
-        # would fire too early, before that happens)
+        # runs after the inline services are saved, so the confirmation can
+        # include them (a post_save signal on Appointment would fire too
+        # early, before the inline formset has been processed)
         send_confirmation(obj)
         return super().response_add(request, obj, post_url_continue)
 
