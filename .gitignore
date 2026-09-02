@@ -9,6 +9,7 @@ __pycache__/
 # Django specific
 *.sqlite3
 *.log
+staticfiles/
 
 # Environment
 env/
