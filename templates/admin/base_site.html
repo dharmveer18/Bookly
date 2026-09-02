@@ -1,0 +1,452 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Standard full-height toggle rail at the sidebar's edge, same pattern
+       Django ships by default - just sized to match the wider sidebar. */
+    .toggle-nav-sidebar {
+        flex-basis: 32px;
+        width: 32px;
+        font-size: 1.4rem;
+    }
+    #nav-sidebar {
+        flex-basis: 560px !important;
+        left: -561px;
+        margin-left: -561px;
+    }
+    .main.shifted > #nav-sidebar + .content {
+        max-width: calc(100% - 593px);
+    }
+    /* Hidden via CSS (not removed from the DOM) since nav_sidebar.js looks
+       up #nav-filter unconditionally and would error if it were missing. */
+    #nav-filter {
+        display: none;
+    }
+    #nav-sidebar .module th,
+    #nav-sidebar .module caption,
+    #nav-sidebar a,
+    #content-main .module th,
+    #content-main .module caption,
+    #content-main .module a {
+        font-size: 22px;
+    }
+    #nav-sidebar .module th,
+    #content-main .module th {
+        padding: 6px 0;
+    }
+
+    /* Header */
+    #header {
+        background: linear-gradient(120deg, var(--header-bg), var(--secondary) 70%, var(--primary));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    #branding h1, #branding #site-name a {
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+
+    /* Sidebar nav polish */
+    #nav-sidebar .module caption, #nav-sidebar .module th {
+        font-weight: 600;
+    }
+    #nav-sidebar .current-model {
+        border-radius: 6px;
+    }
+    #nav-sidebar table tr:hover td, #nav-sidebar table tr:hover th {
+        background: var(--darkened-bg);
+    }
+
+    /* Dashboard layout: keep the sidebar module reliably on the right */
+    .dashboard #content {
+        width: auto;
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+    }
+    .dashboard #content-main {
+        float: none;
+        flex: 1;
+        min-width: 0;
+    }
+    .dashboard #content-related {
+        float: none !important;
+        position: static !important;
+        width: 520px !important;
+        flex: 0 0 520px !important;
+        margin: 0 !important;
+        order: 2 !important;
+    }
+    .dashboard #content-main {
+        order: 1 !important;
+    }
+
+    /* Front page quick actions */
+    .quick-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        max-width: 480px;
+    }
+    .quick-action {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 22px 24px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: var(--body-bg);
+        text-decoration: none;
+        color: var(--body-fg);
+        box-shadow: 0 2px 6px rgba(23, 55, 75, 0.08);
+        transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+    .quick-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(23, 55, 75, 0.14);
+    }
+    .quick-action-title {
+        font-size: 20px;
+        font-weight: 600;
+    }
+    .quick-action-desc {
+        font-size: 14px;
+        color: var(--body-quiet-color);
+    }
+    .quick-action-primary {
+        background: linear-gradient(120deg, var(--header-bg), var(--secondary) 70%, var(--primary));
+        border-color: transparent;
+    }
+    .quick-action-primary .quick-action-title,
+    .quick-action-primary .quick-action-desc {
+        color: var(--header-link-color);
+    }
+
+    /* The dashboard sidebar wrapper has its own gray background by default;
+       kill it so our module's own background/shadow is the only surface shown. */
+    #content-related {
+        background: transparent;
+    }
+    /* Upcoming bookings module */
+    #upcoming-bookings-module {
+        background: #eaf3f8;
+        background: color-mix(in srgb, var(--primary) 15%, var(--body-bg));
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(23, 55, 75, 0.08);
+        margin: 0;
+    }
+    /* Django's #content-related .module h2 rule is more specific than a
+       plain "#upcoming-bookings-module h2" selector and strips our styling
+       down to plain text + a bottom border - match its specificity to win. */
+    #content-related #upcoming-bookings-module h2 {
+        background: var(--header-bg);
+        color: var(--header-link-color);
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+        padding: 14px 16px;
+        margin: 0 0 14px;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+    .upcoming-bookings {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px;
+    }
+    .upcoming-bookings-empty {
+        color: var(--body-quiet-color);
+        padding: 8px 0;
+    }
+    .booking-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: var(--body-bg);
+        border: 1px solid var(--border-color);
+        border-left: 4px solid var(--primary);
+        border-radius: 10px;
+        padding: 14px 16px;
+        text-decoration: none;
+        color: var(--body-fg);
+        box-shadow: 0 2px 6px rgba(23, 55, 75, 0.08);
+        transition: transform 0.14s ease, box-shadow 0.14s ease;
+    }
+    .booking-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(23, 55, 75, 0.14);
+    }
+    .booking-card.status-confirmed { border-left-color: #2e8b57; }
+    .booking-card.status-pending { border-left-color: #d69e2e; }
+    .booking-card.status-completed { border-left-color: #3182ce; }
+    .booking-card.status-no_show { border-left-color: #a0aec0; }
+
+    .booking-card-time {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 64px;
+        text-align: center;
+        line-height: 1.2;
+    }
+    .booking-day {
+        font-size: 13px;
+        text-transform: uppercase;
+        color: var(--body-quiet-color);
+        letter-spacing: 0.04em;
+    }
+    .booking-hour {
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    .booking-card-body {
+        flex: 1;
+        min-width: 0;
+    }
+    .booking-client {
+        font-weight: 600;
+        font-size: 16px;
+    }
+    .booking-meta {
+        font-size: 14px;
+        color: var(--body-quiet-color);
+        margin-top: 1px;
+    }
+    .booking-services {
+        margin-top: 4px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    .service-chip {
+        font-size: 13px;
+        background: var(--darkened-bg);
+        border: 1px solid var(--hairline-color);
+        border-radius: 999px;
+        padding: 2px 10px;
+        color: var(--body-medium-color);
+    }
+
+    .booking-status-pill {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: capitalize;
+        padding: 4px 12px;
+        border-radius: 999px;
+        white-space: nowrap;
+        background: var(--darkened-bg);
+        color: var(--body-medium-color);
+    }
+    .status-confirmed .booking-status-pill { background: #e6f4ea; color: #2e8b57; }
+    .status-pending .booking-status-pill { background: #fdf3d8; color: #a86e00; }
+    .status-completed .booking-status-pill { background: #e5f0fb; color: #3182ce; }
+    .status-no_show .booking-status-pill { background: #edf0f3; color: #718096; }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--body-quiet-color);
+        text-decoration: none;
+    }
+    .back-link:hover {
+        color: var(--primary);
+    }
+
+    /* Details pages (appointment / client): one large card holding the
+       current record, its history, and the action buttons together */
+    .unified-card {
+        max-width: 760px;
+        background: var(--body-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(23, 55, 75, 0.08);
+        padding: 28px 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .card-section {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--hairline-color);
+    }
+    .section-title {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--body-quiet-color);
+        margin: 0 0 12px;
+    }
+    .details-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+    .details-header h1 {
+        font-size: 22px;
+        margin: 0;
+    }
+    .details-grid {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        row-gap: 14px;
+        column-gap: 16px;
+    }
+    .details-grid dt {
+        font-weight: 600;
+        color: var(--body-quiet-color);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .details-grid dd {
+        margin: 0;
+    }
+
+    /* Action buttons, in a row under the main card */
+    .details-actions-bottom {
+        display: flex;
+        gap: 12px;
+    }
+    .side-button {
+        display: block;
+        text-align: center;
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        border: 1px solid var(--border-color);
+        background: var(--body-bg);
+        color: var(--body-fg);
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .side-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+    .side-button-primary {
+        background: var(--primary);
+        color: #fff;
+        border-color: transparent;
+    }
+    .side-button-danger {
+        background: #fdecec;
+        color: #ba2121;
+        border-color: #f3c6c6;
+    }
+
+    .history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .history-row {
+        border-radius: 6px;
+        background: var(--darkened-bg);
+        overflow: hidden;
+    }
+    .history-row summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px 10px;
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--body-fg);
+        list-style: none;
+    }
+    .history-row summary::-webkit-details-marker {
+        display: none;
+    }
+    .history-row summary::after {
+        content: '+';
+        font-weight: 700;
+        color: var(--body-quiet-color);
+        margin-left: 4px;
+    }
+    .history-row[open] summary::after {
+        content: '\2212';
+    }
+    .history-row summary:hover {
+        background: color-mix(in srgb, var(--primary) 12%, var(--darkened-bg));
+    }
+    .history-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .history-expand {
+        padding: 0 10px 10px;
+    }
+    /* A compact card that unfolds below the summary row, rather than
+       navigating away to a separate page. */
+    .mini-card {
+        background: var(--body-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(23, 55, 75, 0.06);
+        padding: 12px 14px;
+    }
+    .mini-card-grid {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        row-gap: 8px;
+        column-gap: 10px;
+        margin: 0;
+    }
+    .mini-card-grid dt {
+        font-weight: 600;
+        color: var(--body-quiet-color);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+    .mini-card-grid dd {
+        margin: 0;
+        font-size: 13px;
+    }
+
+    /* Setup page */
+    .setup-intro {
+        color: var(--body-quiet-color);
+        font-size: 13px;
+        line-height: 1.6;
+        margin: 0 0 16px;
+    }
+    .setup-steps {
+        margin: 12px 0 0;
+        padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+    .setup-steps code {
+        background: var(--darkened-bg);
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-size: 12px;
+    }
+    .history-empty {
+        color: var(--body-quiet-color);
+        font-size: 13px;
+        margin: 0;
+    }
+    .pill-confirmed { background: #e6f4ea; color: #2e8b57; }
+    .pill-pending { background: #fdf3d8; color: #a86e00; }
+    .pill-completed { background: #e5f0fb; color: #3182ce; }
+    .pill-no_show { background: #edf0f3; color: #718096; }
+</style>
+{% endblock %}

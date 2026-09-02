@@ -1,0 +1,105 @@
+{% extends "admin/base_site.html" %}
+
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<a class="back-link" href="javascript:void(0);" onclick="history.back();">&larr; Back</a>
+<div class="unified-card">
+    <div class="details-header status-{{ appointment.status }}">
+        <h1>{{ appointment.client }}</h1>
+        <span class="booking-status-pill">{{ appointment.get_status_display }}</span>
+    </div>
+    <dl class="details-grid">
+        <dt>Date &amp; time</dt>
+        <dd>{{ appointment.start_time|date:"D, M j Y" }} at {{ appointment.start_time|time:"g:i A" }} - {{ appointment.end_time|time:"g:i A" }}</dd>
+
+        <dt>Staff</dt>
+        <dd>{{ appointment.staff }}</dd>
+
+        <dt>Client phone</dt>
+        <dd>{{ appointment.client.phone|default:"—" }}</dd>
+
+        <dt>Services</dt>
+        <dd>
+            {% for line in appointment.services.all %}
+            <div>{{ line.service.name }} — ${{ line.price_at_booking }}</div>
+            {% empty %}
+            <span>No services added</span>
+            {% endfor %}
+        </dd>
+
+        <dt>Notes</dt>
+        <dd>{{ appointment.notes|default:"—" }}</dd>
+    </dl>
+
+    <div class="card-section">
+        <h2 class="section-title">Upcoming appointments</h2>
+        {% if upcoming_appointments %}
+        <div class="history-list">
+            {% for a in upcoming_appointments %}
+            <details class="history-row">
+                <summary>
+                    <span class="history-name">{% for line in a.services.all %}{{ line.service.name }}{% if not forloop.last %}, {% endif %}{% empty %}Appointment{% endfor %} — {{ a.start_time|date:"M j, Y" }}</span>
+                    <span class="booking-status-pill pill-{{ a.status }}">{{ a.get_status_display }}</span>
+                </summary>
+                <div class="history-expand">
+                    <div class="mini-card">
+                        <dl class="mini-card-grid">
+                            <dt>Date &amp; time</dt>
+                            <dd>{{ a.start_time|date:"D, M j Y" }} at {{ a.start_time|time:"g:i A" }} - {{ a.end_time|time:"g:i A" }}</dd>
+                            <dt>Staff</dt>
+                            <dd>{{ a.staff }}</dd>
+                            <dt>Services</dt>
+                            <dd>{% for line in a.services.all %}{{ line.service.name }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</dd>
+                            <dt>Notes</dt>
+                            <dd>{{ a.notes|default:"—" }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </details>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="history-empty">No other upcoming appointments for this client.</p>
+        {% endif %}
+    </div>
+
+    <div class="card-section">
+        <h2 class="section-title">Completed appointments</h2>
+        {% if completed_appointments %}
+        <div class="history-list">
+            {% for a in completed_appointments %}
+            <details class="history-row">
+                <summary>
+                    <span class="history-name">{% for line in a.services.all %}{{ line.service.name }}{% if not forloop.last %}, {% endif %}{% empty %}Appointment{% endfor %} — {{ a.start_time|date:"M j, Y" }}</span>
+                    <span class="booking-status-pill pill-completed">Completed</span>
+                </summary>
+                <div class="history-expand">
+                    <div class="mini-card">
+                        <dl class="mini-card-grid">
+                            <dt>Date &amp; time</dt>
+                            <dd>{{ a.start_time|date:"D, M j Y" }} at {{ a.start_time|time:"g:i A" }} - {{ a.end_time|time:"g:i A" }}</dd>
+                            <dt>Staff</dt>
+                            <dd>{{ a.staff }}</dd>
+                            <dt>Services</dt>
+                            <dd>{% for line in a.services.all %}{{ line.service.name }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</dd>
+                            <dt>Notes</dt>
+                            <dd>{{ a.notes|default:"—" }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </details>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="history-empty">No completed appointments yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="card-section details-actions-bottom">
+        <a class="side-button side-button-primary" href="{% url 'admin:bookings_appointment_edit' appointment.pk %}">Edit appointment</a>
+        <a class="side-button" href="{% url 'admin:bookings_appointment_add' %}?client={{ appointment.client_id }}">Add another appointment</a>
+        <a class="side-button side-button-danger" href="{% url 'admin:bookings_appointment_delete' appointment.pk %}">Delete</a>
+    </div>
+</div>
+{% endblock %}

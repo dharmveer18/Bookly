@@ -42,6 +42,29 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
+# Email - defaults to printing to the console so reminders work with zero
+# setup. Set these in .env to send for real via a free SMTP tier (e.g. Gmail
+# with an app password, or Brevo/Mailgun's free tier).
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Bookly <noreply@bookly.local>")
+
+# WhatsApp Business Cloud API (optional) - leave WHATSAPP_ACCESS_TOKEN unset
+# to print reminder messages to the console instead of sending. Requires a
+# Meta Business account, a registered WhatsApp number, and an approved
+# message template (see bookings/whatsapp.py for details).
+WHATSAPP_ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN", "")
+WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "")
+WHATSAPP_API_VERSION = os.getenv("WHATSAPP_API_VERSION", "v21.0")
+WHATSAPP_TEMPLATE_NAME_CONFIRMATION = os.getenv("WHATSAPP_TEMPLATE_NAME_CONFIRMATION", "appointment_confirmation")
+WHATSAPP_TEMPLATE_NAME_REMINDER = os.getenv("WHATSAPP_TEMPLATE_NAME_REMINDER", "appointment_reminder")
+WHATSAPP_TEMPLATE_LANGUAGE = os.getenv("WHATSAPP_TEMPLATE_LANGUAGE", "en_US")
+DEFAULT_COUNTRY_CODE = os.getenv("DEFAULT_COUNTRY_CODE", "+61")
+
 # Optional for getting extra data
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["email", "profile"]
 SOCIAL_AUTH_LINKEDIN_OAUTH2_SCOPE = ["r_liteprofile", "r_emailaddress"]
@@ -66,6 +89,7 @@ INSTALLED_APPS = [
     # 'theme',     # Tailwind theme app (your frontend assets)
     "login",  # Your app handling login, home, booking, etc.
     "social_django",
+    "bookings",
 ]
 
 MIDDLEWARE = [

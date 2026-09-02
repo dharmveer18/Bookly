@@ -1,0 +1,23 @@
+{% load tz %}
+<div class="upcoming-bookings">
+    {% if not appointments %}
+    <p class="upcoming-bookings-empty">No upcoming bookings.</p>
+    {% else %}
+    {% for appt in appointments %}
+    <a class="booking-card status-{{ appt.status }}" href="{% url 'admin:bookings_appointment_change' appt.pk %}">
+        <div class="booking-card-time">
+            <span class="booking-day">{{ appt.start_time|date:"D, M j" }}</span>
+            <span class="booking-hour">{{ appt.start_time|time:"g:i A" }}</span>
+        </div>
+        <div class="booking-card-body">
+            <div class="booking-client">{{ appt.client }}</div>
+            <div class="booking-meta">with {{ appt.staff }} · {{ appt.client.phone }}</div>
+            <div class="booking-services">
+                {% for line in appt.services.all %}<span class="service-chip">{{ line.service.name }}</span>{% endfor %}
+            </div>
+        </div>
+        <span class="booking-status-pill">{{ appt.get_status_display }}</span>
+    </a>
+    {% endfor %}
+    {% endif %}
+</div>

@@ -18,7 +18,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from bookings.views import setup_view
+
 urlpatterns = [
+    path("admin/setup/", admin.site.admin_view(setup_view), name="bookings_setup"),
     path("admin/", admin.site.urls),
     path("", include("login.urls")),
     path("auth/", include("social_django.urls", namespace="social")),

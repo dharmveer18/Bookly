@@ -1,0 +1,32 @@
+{% extends "admin/index.html" %}
+{% load bookings_extras %}
+
+{% block content_title %}{% endblock %}
+
+{% block nav-sidebar %}
+{% include "admin/nav_sidebar.html" %}
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <div class="quick-actions">
+    <a class="quick-action quick-action-primary" href="{% url 'admin:bookings_appointment_add' %}">
+        <span class="quick-action-title">Book an appointment</span>
+        <span class="quick-action-desc">Create a new booking for a client</span>
+    </a>
+    <a class="quick-action" href="{% url 'admin:bookings_client_add' %}">
+        <span class="quick-action-title">Add a client</span>
+        <span class="quick-action-desc">Create a new client profile</span>
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+    <div class="module" id="upcoming-bookings-module">
+        <h2>Upcoming bookings</h2>
+        {% upcoming_bookings %}
+    </div>
+</div>
+{% endblock %}

@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 
-@login_required(login_url="login")
+# @login_required(login_url="login")
 def home(request):
     return render(request, "login/home.html")
 
