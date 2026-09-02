@@ -1,0 +1,11 @@
+{% extends "admin/app_index.html" %}
+{% load bookings_extras %}
+
+{% block sidebar %}
+<div id="content-related">
+    <div class="module" id="upcoming-bookings-module">
+        <h2>Upcoming bookings</h2>
+        {% upcoming_bookings %}
+    </div>
+</div>
+{% endblock %}
