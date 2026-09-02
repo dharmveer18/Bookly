@@ -29,7 +29,9 @@ def to_e164(phone):
     return settings.DEFAULT_COUNTRY_CODE + digits
 
 
-def send_whatsapp_message(client_first_name, phone, short_date, time_str, staff_name, template_name, label):
+def send_whatsapp_message(
+    client_first_name, phone, short_date, time_str, staff_name, template_name, label
+):
     to = to_e164(phone)
 
     if not settings.WHATSAPP_ACCESS_TOKEN or not settings.WHATSAPP_PHONE_NUMBER_ID:
@@ -40,7 +42,10 @@ def send_whatsapp_message(client_first_name, phone, short_date, time_str, staff_
         )
         return
 
-    url = f"https://graph.facebook.com/{settings.WHATSAPP_API_VERSION}/{settings.WHATSAPP_PHONE_NUMBER_ID}/messages"
+    url = (
+        f"https://graph.facebook.com/{settings.WHATSAPP_API_VERSION}/"
+        f"{settings.WHATSAPP_PHONE_NUMBER_ID}/messages"
+    )
     headers = {"Authorization": f"Bearer {settings.WHATSAPP_ACCESS_TOKEN}"}
     payload = {
         "messaging_product": "whatsapp",

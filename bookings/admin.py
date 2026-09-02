@@ -2,8 +2,9 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.db import models
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls import path
+from django.urls import path, reverse
 from django.utils import timezone
 from social_django.models import Association, Nonce, UserSocialAuth
 
@@ -53,7 +54,9 @@ class ClientAdmin(admin.ModelAdmin):
             "upcoming_appointments": client.appointments.filter(start_time__gte=now)
             .exclude(status="cancelled")
             .order_by("start_time"),
-            "completed_appointments": client.appointments.filter(status="completed").order_by("-start_time"),
+            "completed_appointments": client.appointments.filter(status="completed").order_by(
+                "-start_time"
+            ),
         }
         return render(request, "admin/client_details.html", context)
 
@@ -98,7 +101,9 @@ class AppointmentAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.DateTimeField: {
             "form_class": forms.DateTimeField,
-            "widget": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
+            "widget": forms.DateTimeInput(
+                attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"
+            ),
         },
     }
 
@@ -139,3 +144,8 @@ class AppointmentAdmin(admin.ModelAdmin):
         # early, before the inline formset has been processed)
         send_confirmation(obj)
         return super().response_add(request, obj, post_url_continue)
+
+    def response_post_save_add(self, request, obj):
+        # land on the dashboard (instead of Django's default changelist) so
+        # the new appointment shows up in "Upcoming bookings" right away.
+        return HttpResponseRedirect(reverse("admin:index"))

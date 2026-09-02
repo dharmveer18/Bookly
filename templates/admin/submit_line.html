@@ -1,0 +1,7 @@
+{% extends "admin/submit_line.html" %}
+{% load i18n %}
+
+{% block submit-row %}
+{{ block.super }}
+<a class="closelink" href="javascript:void(0);" onclick="history.back();">{% translate "Cancel" %}</a>
+{% endblock %}

@@ -10,7 +10,7 @@ REMINDER_WINDOW = timedelta(hours=24)
 
 
 class Command(BaseCommand):
-    help = "Sends an email and/or WhatsApp reminder for appointments starting within the next 24 hours."
+    help = "Sends an email and/or WhatsApp reminder for appointments starting within the next 24h."
 
     def handle(self, *args, **options):
         now = timezone.now()

@@ -11,7 +11,7 @@
         </div>
         <div class="booking-card-body">
             <div class="booking-client">{{ appt.client }}</div>
-            <div class="booking-meta">with {{ appt.staff }} · {{ appt.client.phone }}</div>
+            <div class="booking-meta">{{ appt.client.phone }}</div>
             <div class="booking-services">
                 {% for line in appt.services.all %}<span class="service-chip">{{ line.service.name }}</span>{% endfor %}
             </div>

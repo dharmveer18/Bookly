@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.dateformat import format as date_format
 
 
 class Client(models.Model):
@@ -87,7 +88,8 @@ class Appointment(models.Model):
         return self.start_time + timedelta(minutes=total_minutes)
 
     def __str__(self):
-        return f"{self.client} with {self.staff} at {self.start_time}"
+        when = date_format(self.start_time, "M j, Y, g:i A")
+        return f"{self.client} with {self.staff} at {when}"
 
 
 class AppointmentService(models.Model):
