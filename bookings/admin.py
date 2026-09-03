@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.db import models
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -23,6 +23,10 @@ admin.site.unregister(UserSocialAuth)
 admin.site.unregister(Nonce)
 admin.site.unregister(Association)
 admin.site.unregister(Group)
+# hides the whole "Authentication and Authorization" section (only one
+# person uses this app - if you need to manage users later, do it via
+# `manage.py shell` or re-register this).
+admin.site.unregister(User)
 
 admin.site.site_header = "Bookly"
 admin.site.site_title = "Bookly Admin"
