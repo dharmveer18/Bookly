@@ -48,7 +48,7 @@ SOCIAL_AUTH_FACEBOOK_SECRET = "your-facebook-app-secret"
 SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = "your-linkedin-client-id"
 SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = "your-linkedin-client-secret"
 
-LOGIN_URL = "login"
+LOGIN_URL = "admin:login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 

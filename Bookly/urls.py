@@ -21,9 +21,8 @@ from django.urls import include, path
 from bookings.views import setup_view
 
 urlpatterns = [
-    path("admin/setup/", admin.site.admin_view(setup_view), name="bookings_setup"),
-    path("admin/", admin.site.urls),
-    path("", include("login.urls")),
+    path("setup/", admin.site.admin_view(setup_view), name="bookings_setup"),
+    path("", admin.site.urls),
     path("auth/", include("social_django.urls", namespace="social")),
     path("", include("core.urls")),
 ]

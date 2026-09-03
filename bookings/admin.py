@@ -26,6 +26,10 @@ admin.site.unregister(Group)
 
 admin.site.site_header = "Bookly"
 admin.site.site_title = "Bookly Admin"
+# admin is mounted at "/" (see Bookly/urls.py) alongside other routes
+# (/healthz/, /auth/...) - admin's default catch-all view would otherwise
+# intercept those before they reach their real views.
+admin.site.final_catch_all_view = False
 
 
 @admin.register(Client)
