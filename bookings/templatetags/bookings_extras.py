@@ -10,7 +10,7 @@ register = template.Library()
 def upcoming_bookings():
     appointments = (
         Appointment.objects.filter(start_time__gte=timezone.now())
-        .exclude(status="cancelled")
+        .filter(status__in=["confirmed", "pending"])
         .select_related("client", "staff__user")
         .prefetch_related("services__service")
         .order_by("start_time")[:8]

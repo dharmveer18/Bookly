@@ -9,9 +9,7 @@
         <h1>Setup</h1>
     </div>
     <p class="setup-intro">
-        Connect Bookly to email and WhatsApp so clients get automatic booking confirmations and reminders.
-        These are configured in this server's <code>.env</code> file &mdash; edit it, then restart the server
-        for changes to take effect.
+        Email and WhatsApp appointment reminders can be turned on for you.
     </p>
 
     <div class="card-section">
@@ -19,16 +17,11 @@
         <p>
             Status:
             {% if email_configured %}
-            <span class="booking-status-pill pill-confirmed">Configured</span>
+            <span class="booking-status-pill pill-confirmed">Turned on</span>
             {% else %}
-            <span class="booking-status-pill pill-pending">Not configured &mdash; printing to console</span>
+            <span class="booking-status-pill pill-pending">Not turned on yet</span>
             {% endif %}
         </p>
-        <ol class="setup-steps">
-            <li>Use any SMTP provider &mdash; e.g. Gmail (free, with an <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">app password</a>), or a free-tier service like Brevo or Mailgun.</li>
-            <li>In <code>.env</code>, set <code>EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend</code>, plus <code>EMAIL_HOST</code>, <code>EMAIL_PORT</code>, <code>EMAIL_HOST_USER</code>, <code>EMAIL_HOST_PASSWORD</code>, <code>EMAIL_USE_TLS</code>, and <code>DEFAULT_FROM_EMAIL</code>.</li>
-            <li>Restart the server.</li>
-        </ol>
     </div>
 
     <div class="card-section">
@@ -36,18 +29,17 @@
         <p>
             Status:
             {% if whatsapp_configured %}
-            <span class="booking-status-pill pill-confirmed">Configured</span>
+            <span class="booking-status-pill pill-confirmed">Turned on</span>
             {% else %}
-            <span class="booking-status-pill pill-pending">Not configured &mdash; printing to console</span>
+            <span class="booking-status-pill pill-pending">Not turned on yet</span>
             {% endif %}
         </p>
-        <ol class="setup-steps">
-            <li>Create a Meta Business account and a WhatsApp Business app at <a href="https://developers.facebook.com/apps" target="_blank" rel="noopener">developers.facebook.com/apps</a>.</li>
-            <li>Register a WhatsApp phone number for it and note the <strong>Phone Number ID</strong> and a <strong>permanent access token</strong> (a System User token, not a 24-hour test token).</li>
-            <li>Create and submit two message templates in the "Utility" category for Meta's approval, each with 4 body variables in order &mdash; client name, date, time, staff &mdash; named <code>appointment_confirmation</code> and <code>appointment_reminder</code> (or choose your own and set the name below).</li>
-            <li>In <code>.env</code>, set <code>WHATSAPP_ACCESS_TOKEN</code> and <code>WHATSAPP_PHONE_NUMBER_ID</code>, plus <code>WHATSAPP_TEMPLATE_NAME_CONFIRMATION</code> / <code>WHATSAPP_TEMPLATE_NAME_REMINDER</code> if you used different template names.</li>
-            <li>Restart the server.</li>
-        </ol>
+    </div>
+
+    <div class="card-section">
+        <p class="setup-intro" style="margin-bottom: 0;">
+            Want email or WhatsApp reminders turned on? Contact me and I'll set it up for you.
+        </p>
     </div>
 </div>
 {% endblock %}

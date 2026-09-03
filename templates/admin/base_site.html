@@ -11,12 +11,12 @@
         font-size: 1.4rem;
     }
     #nav-sidebar {
-        flex-basis: 560px !important;
-        left: -561px;
-        margin-left: -561px;
+        flex-basis: 380px !important;
+        left: -381px;
+        margin-left: -381px;
     }
     .main.shifted > #nav-sidebar + .content {
-        max-width: calc(100% - 593px);
+        max-width: calc(100% - 413px);
     }
     /* Hidden via CSS (not removed from the DOM) since nav_sidebar.js looks
        up #nav-filter unconditionally and would error if it were missing. */
@@ -61,19 +61,21 @@
     .dashboard #content {
         width: auto;
         display: flex;
+        flex-wrap: wrap;
         align-items: flex-start;
         gap: 24px;
     }
     .dashboard #content-main {
         float: none;
-        flex: 1;
+        flex: 1 1 320px;
         min-width: 0;
     }
     .dashboard #content-related {
         float: none !important;
         position: static !important;
         width: 520px !important;
-        flex: 0 0 520px !important;
+        flex: 0 1 520px !important;
+        max-width: 100%;
         margin: 0 !important;
         order: 2 !important;
     }
@@ -84,16 +86,18 @@
     /* Front page quick actions */
     .quick-actions {
         display: flex;
-        flex-direction: column;
-        gap: 16px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
         max-width: 480px;
     }
     .quick-action {
+        flex: 1 1 160px;
         display: flex;
         flex-direction: column;
-        gap: 4px;
-        padding: 22px 24px;
-        border-radius: 12px;
+        gap: 2px;
+        padding: 12px 14px;
+        border-radius: 10px;
         border: 1px solid var(--border-color);
         background: var(--body-bg);
         text-decoration: none;
@@ -106,11 +110,11 @@
         box-shadow: 0 8px 18px rgba(23, 55, 75, 0.14);
     }
     .quick-action-title {
-        font-size: 20px;
+        font-size: 14px;
         font-weight: 600;
     }
     .quick-action-desc {
-        font-size: 14px;
+        font-size: 12px;
         color: var(--body-quiet-color);
     }
     .quick-action-primary {
@@ -151,24 +155,26 @@
         letter-spacing: 0.06em;
     }
     .upcoming-bookings {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 8px;
         padding: 14px;
     }
     .upcoming-bookings-empty {
         color: var(--body-quiet-color);
         padding: 8px 0;
+        grid-column: 1 / -1;
     }
     .booking-card {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 16px;
+        gap: 4px 8px;
         background: var(--body-bg);
         border: 1px solid var(--border-color);
-        border-left: 4px solid var(--primary);
-        border-radius: 10px;
-        padding: 14px 16px;
+        border-left: 3px solid var(--primary);
+        border-radius: 8px;
+        padding: 8px 10px;
         text-decoration: none;
         color: var(--body-fg);
         box-shadow: 0 2px 6px rgba(23, 55, 75, 0.08);
@@ -184,35 +190,37 @@
     .booking-card.status-no_show { border-left-color: #a0aec0; }
 
     .booking-card-time {
+        order: 1;
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-width: 64px;
-        text-align: center;
+        align-items: baseline;
+        gap: 4px;
         line-height: 1.2;
     }
     .booking-day {
-        font-size: 13px;
+        font-size: 10px;
         text-transform: uppercase;
         color: var(--body-quiet-color);
-        letter-spacing: 0.04em;
+        letter-spacing: 0.03em;
     }
     .booking-hour {
         font-weight: 700;
-        font-size: 16px;
+        font-size: 12px;
     }
 
     .booking-card-body {
-        flex: 1;
+        order: 3;
+        flex: 1 1 100%;
         min-width: 0;
     }
     .booking-client {
         font-weight: 600;
-        font-size: 16px;
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .booking-meta {
-        font-size: 14px;
+        font-size: 11px;
         color: var(--body-quiet-color);
         margin-top: 1px;
     }
@@ -220,22 +228,24 @@
         margin-top: 4px;
         display: flex;
         flex-wrap: wrap;
-        gap: 4px;
+        gap: 3px;
     }
     .service-chip {
-        font-size: 13px;
+        font-size: 10px;
         background: var(--darkened-bg);
         border: 1px solid var(--hairline-color);
         border-radius: 999px;
-        padding: 2px 10px;
+        padding: 1px 7px;
         color: var(--body-medium-color);
     }
 
     .booking-status-pill {
-        font-size: 13px;
+        order: 2;
+        margin-left: auto;
+        font-size: 10px;
         font-weight: 600;
         text-transform: capitalize;
-        padding: 4px 12px;
+        padding: 2px 8px;
         border-radius: 999px;
         white-space: nowrap;
         background: var(--darkened-bg);
@@ -423,21 +433,6 @@
         font-size: 13px;
         line-height: 1.6;
         margin: 0 0 16px;
-    }
-    .setup-steps {
-        margin: 12px 0 0;
-        padding-left: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        font-size: 13px;
-        line-height: 1.6;
-    }
-    .setup-steps code {
-        background: var(--darkened-bg);
-        border-radius: 4px;
-        padding: 1px 5px;
-        font-size: 12px;
     }
     .history-empty {
         color: var(--body-quiet-color);
