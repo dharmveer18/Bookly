@@ -106,7 +106,10 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_display = ("client", "staff", "start_time", "end_time", "status")
     list_filter = ("status", "staff")
     search_fields = ("client__first_name", "client__last_name")
-    exclude = ["reminder_sent_at"]
+    # "staff" is hidden from the form for now, not removed - only one person
+    # uses this, so picking a staff member on every booking is pointless
+    # friction. save_model() auto-assigns the sole Staff record instead.
+    exclude = ["reminder_sent_at", "staff"]
     inlines = [AppointmentServiceInline]
     formfield_overrides = {
         models.DateTimeField: {
@@ -116,6 +119,11 @@ class AppointmentAdmin(admin.ModelAdmin):
             ),
         },
     }
+
+    def save_model(self, request, obj, form, change):
+        if not obj.staff_id:
+            obj.staff = Staff.objects.first()
+        super().save_model(request, obj, form, change)
 
     def save_formset(self, request, form, formset, change):
         # "order" and "price_at_booking" aren't shown on the inline form -
