@@ -14,13 +14,6 @@
         flex-basis: 380px !important;
         left: -381px;
         margin-left: -381px;
-        margin-top: 14px;
-        margin-right: 14px;
-        margin-bottom: 14px;
-        border-radius: 18px;
-        background: linear-gradient(165deg, var(--secondary), var(--header-bg) 65%, var(--primary));
-        box-shadow: 0 22px 48px -18px rgba(15, 35, 48, 0.55);
-        padding: 6px;
     }
     .main.shifted > #nav-sidebar + .content {
         max-width: calc(100% - 413px);
@@ -53,34 +46,15 @@
         letter-spacing: 0.02em;
     }
 
-    /* Sidebar nav polish - dark gradient panel needs light text/links,
-       and each app group reads as its own soft "chip" on the gradient. */
-    #nav-sidebar .module {
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 12px;
-        margin: 6px;
-        overflow: hidden;
-    }
+    /* Sidebar nav polish */
     #nav-sidebar .module caption, #nav-sidebar .module th {
         font-weight: 600;
     }
-    #nav-sidebar .module caption {
-        background: rgba(255, 255, 255, 0.14);
-        color: #fff;
-    }
-    #nav-sidebar .module th a,
-    #nav-sidebar .module caption a {
-        color: #fff;
-    }
-    #nav-sidebar .module td a {
-        color: rgba(255, 255, 255, 0.85);
-    }
     #nav-sidebar .current-model {
-        background: rgba(255, 255, 255, 0.16);
         border-radius: 6px;
     }
     #nav-sidebar table tr:hover td, #nav-sidebar table tr:hover th {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--darkened-bg);
     }
 
     /* Dashboard layout: keep the sidebar module reliably on the right */
