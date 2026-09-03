@@ -127,13 +127,21 @@ class AppointmentAdmin(admin.ModelAdmin):
 
     def save_formset(self, request, form, formset, change):
         # "order" and "price_at_booking" aren't shown on the inline form -
-        # assign order from row position, price auto-fills on save().
+        # assign order from row position, price auto-fills on save(). For an
+        # existing row whose service was changed, price_at_booking still
+        # holds the OLD service's price (AppointmentService.save() only
+        # auto-fills when it's None) - reset it so the new price applies.
         if formset.model is not AppointmentService:
             return super().save_formset(request, form, formset, change)
         instances = formset.save(commit=False)
+        changed_service_pks = {
+            obj.pk for obj, changed_fields in formset.changed_objects if "service" in changed_fields
+        }
         for index, instance in enumerate(instances):
             instance.appointment = form.instance
             instance.order = index
+            if instance.pk in changed_service_pks:
+                instance.price_at_booking = None
             instance.save()
         for obj in formset.deleted_objects:
             obj.delete()
